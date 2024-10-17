@@ -102,7 +102,13 @@ def change_title_to_id(dict_data):
     return dict_data
 
 
+def post_data(dict_data):
 
+    headers = {
+    "Authorization": f"Bearer {login_to_api()}",
+    "Content-Type": "application/json",
+    }
+    requests.post()
 
 csv_file = 'ASA.csv'
 value = 'Course'
