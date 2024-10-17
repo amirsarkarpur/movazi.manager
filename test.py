@@ -90,15 +90,15 @@ def get_csv_file(csv_file , value):
 
 
 def change_title_to_id(dict_data):
-    for i in range(len(dict_data['Title'])):
-        id_value = check_json_value(dict_data['Title'][i] , get_api_data('categories'))
+    for i in range(len(dict_data['title'])):
+        id_value = check_json_value(dict_data['title'][i] , get_api_data('categories'))
         if id_value:
-            dict_data['Title'][i] = id_value
+            dict_data['title'][i] = id_value
 
-    for j in range(len(dict_data['Instructors'])):
-        id_value = check_json_value_username(dict_data['Instructors'][j] , get_api_data('users'))
+    for j in range(len(dict_data['instructors'])):
+        id_value = check_json_value_username(dict_data['instructors'][j] , get_api_data('users'))
         if id_value:
-            dict_data['Instructors'][j] = id_value
+            dict_data['instructors'][j] = id_value
     return dict_data
 
 
@@ -108,7 +108,7 @@ csv_file = 'ASA.csv'
 value = 'Course'
 title = 'پایتون'
 username = 'AliAsgharFathikhah'
-# print(get_csv_file(csv_file , value))
+print(get_csv_file(csv_file , value))
 # print(get_api_data('users'))
 # print(check_json_value(title , get_api_data('categories')))
 # print(check_json_value_username(username  , get_api_data('users')))
