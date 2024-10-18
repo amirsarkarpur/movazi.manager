@@ -112,7 +112,7 @@ def get_csv_file(csv_file, value):
     elif value == 'Step':
         data = step_data
 
-    if data:
+    if data and value != 'Course':
         num_items = len(list(data.values())[0])  # فرض بر این است که تعداد آیتم‌های همه فیلدها یکسان است
 
         for idx in range(num_items):
@@ -121,8 +121,11 @@ def get_csv_file(csv_file, value):
                 single_item_data[key] = [data[key][idx]]
             print(single_item_data,end="\n\n\n\n")
 
+    else :
+        print(course_data)
+
 csv_file = 'ASA.csv'
-value = 'Lesson'
+value = 'Course'
 get_csv_file(csv_file, value)  
 
 
