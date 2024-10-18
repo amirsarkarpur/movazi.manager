@@ -122,11 +122,14 @@ def get_csv_file(csv_file, value):
             print(single_item_data,end="\n\n\n\n")
 
     else :
-        print(course_data)
+        print(course_data,end="\n\n\n\n")
 
 csv_file = 'ASA.csv'
-value = 'Course'
-get_csv_file(csv_file, value)  
+value_ilst = {'Course','Chapter','Lesson','Step'}
+
+for value in value_ilst:
+
+    get_csv_file(csv_file, value)  
 
 
 # print(get_api_data('users'))
