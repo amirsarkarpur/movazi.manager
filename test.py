@@ -180,11 +180,12 @@ def get_csv_file(csv_file):
         single_item_data = {}
         for key in data:
             single_item_data[key] = data[key][idx]
-        if single_item_data['lesson'] in lesson_titles:
-            value = lesson_titles[single_item_data['lesson']]
-            single_item_data['lesson'] = value
-        step_json = post_data_chapter(single_item_data , 'lessons' , str(single_item_data['lesson']) , 'steps')
-        print(step_json)
+        print(single_item_data)
+        # if single_item_data['lesson'] in lesson_titles:
+        #     value = lesson_titles[single_item_data['lesson']]
+        #     single_item_data['lesson'] = value
+        # step_json = post_data_chapter(single_item_data , 'lessons' , str(single_item_data['lesson']) , 'steps')
+        # print(step_json)
         
 csv_file = 'ASA.csv'
 title = 'ریکت'
