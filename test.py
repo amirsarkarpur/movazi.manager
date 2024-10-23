@@ -175,12 +175,17 @@ def get_csv_file(csv_file):
 
 
     data = step_data
-    num_items = len(list(data.values())[0]) 
+    num_items = len(list(data.values())[0])  # فرض بر این است که تمام لیست‌ها طول یکسان دارند
     for idx in range(num_items):
         single_item_data = {}
         for key in data:
-            single_item_data[key] = data[key][idx]
-        print(single_item_data)
+
+            if idx < len(data[key]) and data[key][idx]:
+                single_item_data[key] = data[key][idx]
+
+        if single_item_data:
+            print(single_item_data)
+
         # if single_item_data['lesson'] in lesson_titles:
         #     value = lesson_titles[single_item_data['lesson']]
         #     single_item_data['lesson'] = value
