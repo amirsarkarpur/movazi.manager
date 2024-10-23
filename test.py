@@ -2,92 +2,128 @@ import requests
 import pandas as pd
 import json
 
-# API_KEY = f'https://api.movazee.ir/v1/dashboard/manage/corses/'
+# Get jwt token for authorization
+def login_to_api():
+    url = "http://api.movazee.ir/v1/auth/login/"
+    body = {
+        "username": "Hamed_Fakoori",
+        "password": "Hamed_Movazee@Admin"
+    }
 
-# def login_to_api():
-#     url = "http://api.movazee.ir/v1/auth/login/"
-#     body = {
-#         "username": "Hamed_Fakoori",
-#         "password": "Hamed_Movazee@Admin"
-#     }
+    response = requests.post(url, json = body)
 
-#     response = requests.post(url, json = body)
-
-#     if response.status_code == 200:
-#         data = response.json()
+    if response.status_code == 200:
+        data = response.json()
         
-#         return data['data'].get('access')
-#     else:
-#         return f"Error: {response.status_code}, {response.text}"
+        return data['data'].get('access')
+    else:
+        return f"Error: {response.status_code}, {response.text}"
     
-# def update_api_key(value):
-#     API_KEY = f'https://api.movazee.ir/v1/dashboard/manage/{value}/'
-#     return API_KEY
+# Update api with value --> (courses , categories , ...)
+def update_api_key_courses(value):
+    API_KEY = f'https://api.movazee.ir/v1/dashboard/manage/{value}/'
+    return API_KEY
 
-# def get_api_data(value):
-#     headers = {
-#     "Authorization": f"Bearer {login_to_api()}",
-#     "Content-Type": "application/json",
-#     }
-#     res = requests.get(url = update_api_key(value) , headers = headers)
-#     if res.status_code == 200:
-#         return res.json()
-#     else:
-#         return 'error bad request'
-
-# def check_json_value(title , json_data):
-#     data_id = {}
-#     for item in json_data['data']:
-#         data_id[item['title']] = item['id']
-#         for child in item['children']:
-#             data_id[child['title']] = child['id']
-#     for id in data_id:
-#         if id == title:
-#             return data_id[id]
-        
-# def check_json_value_username(username , json_data):
-    # data_id = {}
-    # for item in json_data['data']:
-    #     data_id[item['username']] = item['id']
-    # for id in data_id:
-    #     if id == username:
-    #         return data_id[id]
-
-# def change_title_to_id(dict_data):
-    # for i in range(len(dict_data['title'])):
-    #     id_value = check_json_value(dict_data['title'][i] , get_api_data('categories'))
-    #     if id_value:
-    #         dict_data['title'][i] = id_value
-
-    # for j in range(len(dict_data['instructors'])):
-    #     id_value = check_json_value_username(dict_data['instructors'][j] , get_api_data('users'))
-    #     if id_value:
-    #         dict_data['instructors'][j] = id_value
-    # return dict_data
+def update_api_key_chapter(parent , id_value , child):
+    API_KEY = f'https://api.movazee.ir/v1/dashboard/manage/{parent}/{id_value}/{child}'
+    return API_KEY 
 
 
-# def post_data(dict_data):
+# Get api data for check values and raplace to csv data
+def get_api_data(value):
+    headers = {
+    "Authorization": f"Bearer {login_to_api()}",
+    "Content-Type": "application/json",
+    }
+    res = requests.get(url = update_api_key_courses(value) , headers = headers)
+    if res.status_code == 200:
+        return res.json()
+    else:
+        return 'error bad request'
 
-    # headers = {
-    # "Authorization": f"Bearer {login_to_api()}",
-    # "Content-Type": "application/json",
-    # }
-    # requests.post()
+# Chang values --> (categories , tags , users) to therer id for {Courses data}
+def check_json_value(value , json_data , topic):
+    data_id = {}
+    if topic == 'Course':
+        for item in json_data['data']:
+            data_id[item['title']] = item['id']
+            for child in item['children']:
+                data_id[child['title']] = child['id']
+        for id in data_id:
+            if id == value:
+                return data_id[id]
+    elif topic == 'Username':
+        for item in json_data['data']:
+            data_id[item['username']] = item['id']
+        for id in data_id:
+            if id == value:
+                return data_id[id]
+    elif topic == 'Tag':
+        for item in json_data['data']:
+            data_id[item['title']] = item['id']
+        for id in data_id:
+            if id == value:
+                return data_id[id]
+def change_title_to_id(dict_data):
+    for category in range(len(dict_data['categories'])):
+        id_value = check_json_value(dict_data['categories'][category] , get_api_data('categories') , 'Course')
+        if id_value:
+            dict_data['categories'][category] = id_value
+
+    for user in range(len(dict_data['instructors'])):
+        id_value = check_json_value(dict_data['instructors'][user] , get_api_data('users') , 'Username')
+        if id_value:
+            dict_data['instructors'][user] = id_value
+
+    for tag in range(len(dict_data['tags'])):
+        id_value = check_json_value(dict_data['tags'][tag] , get_api_data('tags') , 'Tag')
+        if id_value:
+            dict_data['tags'][tag] = id_value
+    return dict_data
 
 
-def get_csv_file(csv_file, value):
+# Post data to api
+def post_data_course(dict_data , value):
+    headers = {
+    "Authorization": f"Bearer {login_to_api()}",
+    "Content-Type": "application/json",
+    }
+    res = requests.post(url = update_api_key_courses(value) , json = dict_data , headers = headers)
+    if res.status_code == 201 or res.status_code == 200:
+        return res.json()
+    else:
+        return res.json()
+
+def post_data_chapter(dict_data , parent , id_value , child):
+    headers = {
+    "Authorization": f"Bearer {login_to_api()}",
+    "Content-Type": "application/json",
+    }
+    res = requests.post(url = update_api_key_chapter(parent , id_value , child) , json = dict_data , headers = headers)
+    if res.status_code == 201 or res.status_code == 200:
+        return res.json()
+    else:
+        return res.json()
+
+# Get csv file and extract data
+def get_csv_file(csv_file):
     csv = pd.read_csv(csv_file)
     dict_data = {}
     course_data = {}
     chapter_data = {}
     lesson_data = {}
     step_data = {}
-
+    fields_to_keep_as_list = ['Course categories', 'Course instructors', 'Course tags']
     for i in csv.columns:
         filter_value = csv[i].dropna().to_list()
-        if filter_value:
+        if i.startswith('Course'):
+            if i in fields_to_keep_as_list:
+                dict_data[i] = filter_value
+            else:
+                for j in filter_value:
+                    dict_data[i] = j
+        else:
             dict_data[i] = filter_value
-
     for j in dict_data:
         if j.startswith('Course '):
             new_key = j.replace('Course ', '')
@@ -102,39 +138,47 @@ def get_csv_file(csv_file, value):
             new_key = j.replace('Step ', '')
             step_data[new_key] = dict_data[j]
 
-    data = None
-    if value == 'Course':
-        data = course_data
-    elif value == 'Chapter':
-        data = chapter_data
-    elif value == 'Lesson':
-        data = lesson_data
-    elif value == 'Step':
-        data = step_data
+    course_json = post_data_course(change_title_to_id(course_data) , 'courses')
+    print(course_json)
+    course_id = course_json['data']['id']
+    # course_id = 78
 
-    if data and value != 'Course':
-        num_items = len(list(data.values())[0])  # فرض بر این است که تعداد آیتم‌های همه فیلدها یکسان است
+    chapter_titles = {}
+    lesson_titles = {}
+    data = chapter_data
+    num_items = len(list(data.values())[0]) 
+    for idx in range(num_items):
+        single_item_data = {}
+        for key in data:
+            single_item_data[key] = data[key][idx]
+        single_item_data['course'] = course_id
+        chapter_json = post_data_chapter(single_item_data , 'courses' , str(course_id) , 'chapters')
+        title = chapter_json['data']['title']
+        id_value = chapter_json['data']['id']
+        chapter_titles[title] = id_value
+        print(chapter_json)
 
-        for idx in range(num_items):
-            single_item_data = {}
-            for key in data:
-                single_item_data[key] = [data[key][idx]]
-            print(single_item_data,end="\n\n\n\n")
+    data = lesson_data
+    num_items = len(list(data.values())[0]) 
+    for idx in range(num_items):
+        single_item_data = {}
+        for key in data:
+            single_item_data[key] = data[key][idx]
+        if single_item_data['chapter'] in chapter_titles:
+            value = chapter_titles[single_item_data['chapter']]
+            single_item_data['chapter'] = value
+        lesson_json = post_data_chapter(single_item_data , 'chapters' , str(single_item_data['chapter']) , 'lessons')
+        print(lesson_json)
 
-    else :
-        print(course_data,end="\n\n\n\n")
 
+        
 csv_file = 'ASA.csv'
-value_ilst = {'Course','Chapter','Lesson','Step'}
-
-for value in value_ilst:
-
-    get_csv_file(csv_file, value)  
-
-
+title = 'ریکت'
+get_csv_file(csv_file)
+# print(get_csv_file(csv_file))
 # print(get_api_data('users'))
 # print(check_json_value(title , get_api_data('categories')))
 # print(check_json_value_username(username  , get_api_data('users')))
-# print(change_title_to_id(get_csv_file(csv_file , value)))
+# print(change_title_to_id(get_csv_file(csv_file , 'mmd')))
 # change_title_to_id(get_csv_file(csv_file))
 
