@@ -138,60 +138,62 @@ def get_csv_file(csv_file):
             new_key = j.replace('Step ', '')
             step_data[new_key] = dict_data[j]
 
-    # course_json = post_data_course(change_title_to_id(course_data) , 'courses')
-    # print(course_json)
-    # course_id = course_json['data']['id']
+    course_json = post_data_course(change_title_to_id(course_data) , 'courses')
+    print(course_json)
+    course_id = course_json['data']['id']
     # # course_id = 78
 
-    # chapter_titles = {}
-    # lesson_titles = {}
-    # data = chapter_data
-    # num_items = len(list(data.values())[0]) 
-    # for idx in range(num_items):
-    #     single_item_data = {}
-    #     for key in data:
-    #         single_item_data[key] = data[key][idx]
-    #     single_item_data['course'] = course_id
-    #     chapter_json = post_data_chapter(single_item_data , 'courses' , str(course_id) , 'chapters')
-    #     title = chapter_json['data']['title']
-    #     id_value = chapter_json['data']['id']
-    #     chapter_titles[title] = id_value
-    #     print(chapter_json)
-
-    # data = lesson_data
-    # num_items = len(list(data.values())[0]) 
-    # for idx in range(num_items):
-    #     single_item_data = {}
-    #     for key in data:
-    #         single_item_data[key] = data[key][idx]
-    #     if single_item_data['chapter'] in chapter_titles:
-    #         value = chapter_titles[single_item_data['chapter']]
-    #         single_item_data['chapter'] = value
-    #     lesson_json = post_data_chapter(single_item_data , 'chapters' , str(single_item_data['chapter']) , 'lessons')
-    #     title = lesson_json['data']['title']
-    #     id_value = lesson_json['data']['id']
-    #     lesson_titles[title] = id_value
-    #     print(lesson_json)
-
-
-    data = step_data
-    num_items = len(list(data.values())[0])  # فرض بر این است که تمام لیست‌ها طول یکسان دارند
+    chapter_titles = {}
+    lesson_titles = {}
+    data = chapter_data
+    num_items = len(list(data.values())[0]) 
     for idx in range(num_items):
         single_item_data = {}
         for key in data:
-
             if idx < len(data[key]) and data[key][idx]:
                 single_item_data[key] = data[key][idx]
-
         if single_item_data:
-            print(single_item_data)
+            single_item_data['course'] = course_id
+            chapter_json = post_data_chapter(single_item_data , 'courses' , str(course_id) , 'chapters')
+            title = chapter_json['data']['title']
+            id_value = chapter_json['data']['id']
+            chapter_titles[title] = id_value
+            print(chapter_json)
 
-        # if single_item_data['lesson'] in lesson_titles:
-        #     value = lesson_titles[single_item_data['lesson']]
-        #     single_item_data['lesson'] = value
-        # step_json = post_data_chapter(single_item_data , 'lessons' , str(single_item_data['lesson']) , 'steps')
-        # print(step_json)
-        
+    data = lesson_data
+    num_items = len(list(data.values())[0]) 
+    for idx in range(num_items):
+        single_item_data = {}
+        for key in data:
+            if idx < len(data[key]) and data[key][idx]:
+                single_item_data[key] = data[key][idx]
+        if single_item_data:
+            if single_item_data['chapter'] in chapter_titles:
+                value = chapter_titles[single_item_data['chapter']]
+                single_item_data['chapter'] = value
+            lesson_json = post_data_chapter(single_item_data , 'chapters' , str(single_item_data['chapter']) , 'lessons')
+            title = lesson_json['data']['title']
+            id_value = lesson_json['data']['id']
+            lesson_titles[title] = id_value
+            print(lesson_json)
+
+
+    data = step_data
+    num_items = len(list(data.values())[0])
+    for idx in range(num_items):
+        single_item_data = {}
+        for key in data:
+            if idx < len(data[key]) and data[key][idx]:
+                single_item_data[key] = data[key][idx]
+        if single_item_data:
+            if single_item_data['lesson'] in lesson_titles:
+                value = lesson_titles[single_item_data['lesson']]
+                single_item_data['lesson'] = value
+            step_json = post_data_chapter(single_item_data , 'lessons' , str(single_item_data['lesson']) , 'steps')
+            print(step_json)
+            
+
+            
 csv_file = 'ASA.csv'
 title = 'ریکت'
 get_csv_file(csv_file)
