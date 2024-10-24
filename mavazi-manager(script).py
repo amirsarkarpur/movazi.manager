@@ -194,13 +194,7 @@ def get_csv_file(csv_file):
             
 
             
-csv_file = 'ASA.csv'
+csv_file = 'movazi-manager(Excel).csv'
 title = 'ریکت'
 get_csv_file(csv_file)
-# print(get_csv_file(csv_file))
-# print(get_api_data('users'))
-# print(check_json_value(title , get_api_data('categories')))
-# print(check_json_value_username(username  , get_api_data('users')))
-# print(change_title_to_id(get_csv_file(csv_file , 'mmd')))
-# change_title_to_id(get_csv_file(csv_file))
 
