@@ -24,6 +24,7 @@ def update_api_key_courses(value):
     API_KEY = f'https://api.movazee.ir/v1/dashboard/manage/{value}/'
     return API_KEY
 
+
 def update_api_key_chapter(parent , id_value , child):
     API_KEY = f'https://api.movazee.ir/v1/dashboard/manage/{parent}/{id_value}/{child}'
     return API_KEY 
@@ -40,6 +41,7 @@ def get_api_data(value):
         return res.json()
     else:
         return 'error bad request'
+
 
 # Change values --> (categories , tags , users) to therer id for {Courses data}
 def check_json_value(value , json_data , topic):
@@ -64,6 +66,8 @@ def check_json_value(value , json_data , topic):
         for id in data_id:
             if id == value:
                 return data_id[id]
+
+
 def change_title_to_id(dict_data):
     for category in range(len(dict_data['categories'])):
         id_value = check_json_value(dict_data['categories'][category] , get_api_data('categories') , 'Course')
@@ -94,6 +98,7 @@ def post_data_course(dict_data , value):
     else:
         return res.json()
 
+        
 def post_data_chapter(dict_data , parent , id_value , child):
     headers = {
     "Authorization": f"Bearer {login_to_api()}",
@@ -104,6 +109,7 @@ def post_data_chapter(dict_data , parent , id_value , child):
         return res.json()
     else:
         return res.json()
+
 
 # Get csv file and extract data
 def get_csv_file(csv_file):
